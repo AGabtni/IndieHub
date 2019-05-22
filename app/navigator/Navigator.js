@@ -1,3 +1,4 @@
+import BurgerMenu from '../components/Menu';
 import DetailScreen from '../screens/Detail';
 import HomeScreen from '../screens/Home';
 import LoadingScreen from '../screens/Loading';
@@ -5,14 +6,20 @@ import OptionsScreen from '../screens/Options';
 import SettingsScreen from '../screens/Settings';
 
 
-
+import React from "react";
 import { Platform } from "react-native";
+import { Icon } from "react-native-elements";
+
 import {
   createBottomTabNavigator,
   createDrawerNavigator,
   createStackNavigator,
   createSwitchNavigator,
-  createAppContainer
+  createAppContainer,
+  StackViewTransitionConfigs,
+  TabScene,
+  TransitionConfig,
+
 } from "react-navigation";
 
 /*const IOS_MODAL_ROUTES = ["OptionsScreen"];
@@ -34,13 +41,52 @@ let dynamicModalTransition = (
 
 const HomeStack = createStackNavigator(
   { DetailScreen, HomeScreen, OptionsScreen },
-  { //transitionConfig: dynamicModalTransition }
+  //{ transitionConfig: dynamicModalTransition }
+  {initialRouteName: "HomeScreen"}
+);
+
+HomeStack.navigationOptions = ({ navigation }: NavigationScreenProps) => {
+  let drawerLockMode = "unlocked";
+  //Lock navigator if not in home menu
+  if (navigation.state.index > 0) {
+    drawerLockMode = "locked-closed";
+  }
+
+  return {
+    tabBarLabel: "Home",
+    tabBarIcon: ({ tintColor }: TabScene) => (
+      <Icon name="ios-home" type="ionicon" color={tintColor} />
+    ),
+    drawerLockMode,
+    drawerLabel: "Home",
+    drawerIcon: ({ tintColor }: TabScene) => (
+      <Icon name="md-home" type="ionicon" color={tintColor} />
+    )
+  };
+};
+
+
+
+
+const SettingsStack = createStackNavigator(
+  { SettingsScreen }
+  //{ transitionConfig: dynamicModalTransition }
+
 );
 
 
+SettingsStack.navigationOptions = {
+  tabBarLabel: "Settings",
+  tabBarIcon: ({ tintColor }: TabScene) => <Icon name="ios-cog" type="ionicon" color={tintColor} />,
+  drawerLabel: "Settings",
+  drawerIcon: ({ tintColor }: TabScene) => <Icon name="md-cog" type="ionicon" color={tintColor} />
+};
+
+
 const MainNavigator = Platform.select({
-  ios: createBottomTabNavigator({ HomeStack, SettingsScreen }),
-  android: createDrawerNavigator({ HomeStack, SettingsScreen })
+  ios: createBottomTabNavigator({ HomeStack, SettingsStack }),
+  android: createDrawerNavigator({ HomeStack, SettingsStack },  { contentComponent: BurgerMenu } ),
+
 });
 
 const RootSwitch = createSwitchNavigator(
@@ -50,4 +96,4 @@ const RootSwitch = createSwitchNavigator(
 
 
 
-export default RootSwitch
+export default RootSwitch;

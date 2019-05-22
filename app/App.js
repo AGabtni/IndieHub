@@ -4,7 +4,7 @@ import Navigator from "./navigator/Navigator";
 import {createAppContainer } from 'react-navigation';
 
 
-interface Props {};
+interface Props {}
 class App extends Component<Props> {
     componentDidMount = () => {
     Orientation.lockToPortrait();
@@ -15,4 +15,6 @@ class App extends Component<Props> {
   }
 
 }
+
+
 export default createAppContainer(Navigator);

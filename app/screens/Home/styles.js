@@ -5,6 +5,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center"
+  },
+
+  image: {
+
+    height : 72,
+    width : 128
+
+  },
+
+  icon:{
+
+    paddingLeft: 10
   }
 });
 
