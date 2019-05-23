@@ -4,6 +4,8 @@ import HomeScreen from '../screens/Home';
 import LoadingScreen from '../screens/Loading';
 import OptionsScreen from '../screens/Options';
 import SettingsScreen from '../screens/Settings';
+import RegisterScreen from '../screens/Register';
+import LoginScreen from '../screens/Login';
 
 
 import React from "react";
@@ -45,9 +47,17 @@ const HomeStack = createStackNavigator(
   {initialRouteName: "HomeScreen"}
 );
 
+
+const SettingsStack = createStackNavigator(
+  { SettingsScreen }
+  //{ transitionConfig: dynamicModalTransition }
+
+);
+
+
 HomeStack.navigationOptions = ({ navigation }: NavigationScreenProps) => {
   let drawerLockMode = "unlocked";
-  //Lock navigator if not in home menu
+  //Lock navigator if not in main stack screen
   if (navigation.state.index > 0) {
     drawerLockMode = "locked-closed";
   }
@@ -65,16 +75,6 @@ HomeStack.navigationOptions = ({ navigation }: NavigationScreenProps) => {
   };
 };
 
-
-
-
-const SettingsStack = createStackNavigator(
-  { SettingsScreen }
-  //{ transitionConfig: dynamicModalTransition }
-
-);
-
-
 SettingsStack.navigationOptions = {
   tabBarLabel: "Settings",
   tabBarIcon: ({ tintColor }: TabScene) => <Icon name="ios-cog" type="ionicon" color={tintColor} />,
@@ -83,16 +83,27 @@ SettingsStack.navigationOptions = {
 };
 
 
-const MainNavigator = Platform.select({
+const AppStack = Platform.select({
   ios: createBottomTabNavigator({ HomeStack, SettingsStack }),
   android: createDrawerNavigator({ HomeStack, SettingsStack },  { contentComponent: BurgerMenu } ),
 
 });
 
+//Create a new auth Stack here :
+
+const AuthStack = createStackNavigator({ SignIn: LoginScreen });
+
+
+//Just add the authStack with the sign in screen inside of RootSwitch
 const RootSwitch = createSwitchNavigator(
-  { LoadingScreen, MainNavigator },
-  { initialRouteName: "MainNavigator" }
+  { AuthLoading:LoadingScreen,
+     App: AppStack,
+    Auth: AuthStack,
+   },
+  { initialRouteName: "AuthLoading" }
 );
+
+
 
 
 

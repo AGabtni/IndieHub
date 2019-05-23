@@ -1,15 +1,23 @@
 import styles from './styles';
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, Button } from 'react-native';
 
 class RegisterScreen extends Component {
+  static navigationOptions = {
+    title: 'Please sign in',
+  };
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text>This is the RegisterScreen.</Text>
+      <View>
+        <Button title="Sign in!" onPress={this._signInAsync} />
       </View>
     );
   }
-}
 
-export default RegisterScreen; // e.g. DetailScreen
+  _signInAsync = async () => {
+    await AsyncStorage.setItem('userToken', 'abc');
+    this.props.navigation.navigate('App');
+  };
+}
+export default RegisterScreen;

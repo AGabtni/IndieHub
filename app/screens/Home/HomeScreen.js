@@ -37,7 +37,6 @@ class HomeScreen extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        <Text>This is the HomeScreen.</Text>
         <TouchableOpacity onPress={() => navigate("DetailScreen")}>
             <Card>
                   <View>
