@@ -1,23 +1,28 @@
-import styles from './styles';
-import React, { Component } from 'react';
-import { Text, View, Button } from 'react-native';
+import strings from "./strings";
+import styles from "./styles";
+import React, { Component } from "react";
+import { Platform, KeyboardAvoidingView } from "react-native";
+import { Icon } from "react-native-elements";
+import { TabScene, NavigationScreenProps } from "react-navigation";
+import RegisterForm from "../../components/RegisterForm";
 
-class RegisterScreen extends Component {
+
+
+class RegisterScreen extends Component<NavigationScreenProps> {
   static navigationOptions = {
-    title: 'Please sign in',
+    tabBarLabel: strings.registerTitle,
+    tabBarIcon: ({ tintColor }: TabScene) => {
+      let iconName = Platform.select({ ios: "ios-person-add", android: "md-person-add" });
+      return <Icon name={iconName} type="ionicon" color={tintColor} />;
+    }
   };
 
   render() {
     return (
-      <View>
-        <Button title="Sign in!" onPress={this._signInAsync} />
-      </View>
+      <KeyboardAvoidingView behavior="padding" style={styles.container}>
+        <RegisterForm navigation={this.props.navigation} />
+      </KeyboardAvoidingView>
     );
   }
-
-  _signInAsync = async () => {
-    await AsyncStorage.setItem('userToken', 'abc');
-    this.props.navigation.navigate('App');
-  };
 }
 export default RegisterScreen;

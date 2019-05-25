@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
 
   icon:{
 
-    padding: 10,
+    padding : 10
   }
 });
 

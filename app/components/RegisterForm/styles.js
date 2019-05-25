@@ -5,37 +5,21 @@ const primaryBlue = Platform.select({
   android: "#2196f3" // rgb(33, 150, 243)
 });
 
-const imageWidth = "60%";
+const imageWidth = "80%";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection:'column',
-
+    
     justifyContent: "space-evenly",
-    alignItems: "center",
-    paddingTop:40
-
+    alignItems: "center"
   },
-  buttonContainer:{
-    flexDirection:'column',
-    flex : 0.5
-
-
-  },
-  forgottenPasswordButtonContainer: {
+  registerButtonContainer: {
     width: imageWidth
   },
-  forgottenPasswordTitle: {
-    color: "white"
-  },
-  loginButtonContainer: {
-    width:  imageWidth
-  },
-  loginButton: {
+  registerButton: {
     backgroundColor: primaryBlue
   },
-  loginButtonTitle: {
+  registerButtonTitle: {
     color: "white"
   },
   disabled: {

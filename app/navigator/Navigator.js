@@ -6,6 +6,10 @@ import OptionsScreen from '../screens/Options';
 import SettingsScreen from '../screens/Settings';
 import RegisterScreen from '../screens/Register';
 import LoginScreen from '../screens/Login';
+import ProfileScreen from '../screens/Profile';
+
+
+import { strings as loginStrings } from "../screens/Login";
 
 
 import React from "react";
@@ -21,6 +25,7 @@ import {
   StackViewTransitionConfigs,
   TabScene,
   TransitionConfig,
+  createMaterialTopTabNavigator,
 
 } from "react-navigation";
 
@@ -53,6 +58,9 @@ const SettingsStack = createStackNavigator(
   //{ transitionConfig: dynamicModalTransition }
 
 );
+const ProfileStack = createStackNavigator(
+  {ProfileScreen}
+);
 
 
 HomeStack.navigationOptions = ({ navigation }: NavigationScreenProps) => {
@@ -82,25 +90,83 @@ SettingsStack.navigationOptions = {
   drawerIcon: ({ tintColor }: TabScene) => <Icon name="md-cog" type="ionicon" color={tintColor} />
 };
 
+ProfileStack.navigationOptions = ({ navigation }: NavigationScreenProps) => {
+  let drawerLockMode = "locked-closed";
+  //Lock navigator if not in main stack screen
+
+
+  return {
+    tabBarLabel: "Profile",
+    tabBarIcon: ({ tintColor }: TabScene) => (
+      <Icon name="ios-person" type="ionicon" color={tintColor} />
+    ),
+    drawerLockMode,
+    drawerLabel: "Profile",
+    drawerIcon: ({ tintColor }: TabScene) => (
+      <Icon name="md-person" type="ionicon" color={tintColor} />
+    )
+  };
+};
 
 const AppStack = Platform.select({
-  ios: createBottomTabNavigator({ HomeStack, SettingsStack }),
-  android: createDrawerNavigator({ HomeStack, SettingsStack },  { contentComponent: BurgerMenu } ),
+  ios: createBottomTabNavigator({ HomeStack, SettingsStack, ProfileStack }),
+  android: createDrawerNavigator({ HomeStack, SettingsStack,ProfileStack },  { contentComponent: BurgerMenu } ),
 
 });
 
 //Create a new auth Stack here :
 
-const AuthStack = createStackNavigator({ SignIn: LoginScreen });
+const LoginStack = createStackNavigator({ LoginScreen });
 
+LoginStack.navigationOptions = ({ navigation }: NavigationScreenProps) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarLabel: loginStrings.loginTitle,
+    tabBarIcon: ({ tintColor }: TabScene) => {
+      let iconName = Platform.select({ ios: "ios-log-in", android: "md-log-in" });
+      return <Icon name={iconName} type="ionicon" color={tintColor} />;
+    },
+    tabBarVisible
+  };
+};
+
+//TOP BAR
+const AuthTabs = createMaterialTopTabNavigator(
+  {
+    LoginStack,
+    RegisterScreen
+  },
+  {
+    tabBarPosition: 'top',
+    swipeEnabled: true,
+    animationEnabled: true,
+    tabBarOptions: {
+      activeTintColor: '#FFFFFF',
+      inactiveTintColor: '#F8F8F8',
+      style: {
+        backgroundColor: '#633689',
+      },
+      labelStyle: {
+        textAlign: 'center',
+      },
+      indicatorStyle: {
+        borderBottomColor: '#87B56A',
+        borderBottomWidth: 2,
+      },
+    },
+  }
+);
 
 //Just add the authStack with the sign in screen inside of RootSwitch
 const RootSwitch = createSwitchNavigator(
-  { AuthLoading:LoadingScreen,
-     App: AppStack,
-    Auth: AuthStack,
-   },
-  { initialRouteName: "AuthLoading" }
+  {  LoadingScreen,
+      AuthTabs,
+      AppStack
+   }
 );
 
 

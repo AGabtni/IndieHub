@@ -7,7 +7,7 @@ class SettingsScreen extends Component {
 
 
     static navigationOptions = ({ navigation }: NavigationScreenProps) =>({
-      title: 'Settings',
+      //title: 'Settings',
       headerLeft: Platform.select({
       ios: (
         <Icon
@@ -26,15 +26,15 @@ class SettingsScreen extends Component {
         />
       )
     }),
+      headerTransparent : true,
 
-
-      headerStyle: {
+      /*headerStyle: {
         backgroundColor: '#f45110',
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
         fontWeight: 'bold',
-      },
+      },*/
     });
   render() {
     return (

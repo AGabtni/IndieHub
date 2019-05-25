@@ -9,6 +9,9 @@ interface Props {
 }
 
 class LoginScreen extends Component<Props, object> {
+  static navigationOptions = {
+      header : null
+  };
   render() {
     return (
       <KeyboardAvoidingView
