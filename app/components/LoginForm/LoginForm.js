@@ -19,14 +19,24 @@ interface Props {
 }
 
 export default class LoginForm extends Component<Props, object> {
-  handleSubmit = (values: FormValues, formikBag: FormikActions<FormValues>) => {
-  formikBag.setSubmitting(true);
-  // Here you would usually make a call to your API for a login.
-  setTimeout(() => {
-    formikBag.setSubmitting(false);
-    this.props.navigation.navigate("HomeScreen");
-  }, 3000);
-};
+
+
+  componentDidMount(){
+    return fetch('http://192.168.0.153:3000/dbRouter/users')
+      .then(res => res.json())
+      .then(users=>console.warn(users))
+    };
+
+
+  handleSubmit = (values: FormValues, formikBag: FormikActions<FormValues>) =>
+  {
+    formikBag.setSubmitting(true);
+    // Here you would usually make a call to your API for a login.
+    setTimeout(() => {
+      formikBag.setSubmitting(false);
+      this.props.navigation.navigate("HomeScreen");
+    }, 3000);
+  };
   renderForm = ({
     values,
     handleSubmit,

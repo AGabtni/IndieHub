@@ -15,13 +15,42 @@ interface FormValues {
 }
 
 export default class LoginForm extends Component<NavigationScreenProps> {
+
+
+  handleRegister = (values: FormValues) => {
+    fetch('http://192.168.0.153:3000/dbRouter/users',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userName: 'Agabt03',
+          password: values.password,
+          email: values.email,
+          jobCategory: 'Developer',
+        }),
+      }
+    )
+    .then((response) => response.json())
+    .catch((error) => {
+      console.error(error);
+    });
+
+
+  };
+
+
   handleSubmit = (values: FormValues, formikBag: FormikActions<FormValues>) => {
     formikBag.setSubmitting(true);
     if (values.email != values.password) {
       setTimeout(() => {
+        this.handleRegister(values);
         formikBag.setSubmitting(false);
         this.props.navigation.navigate("HomeScreen");
-      }, 3000);
+      }, 3000
+    );
     }
   };
 
@@ -81,7 +110,8 @@ export default class LoginForm extends Component<NavigationScreenProps> {
         loadingProps={{ size: "large", color: "white" }}
       />
     </View>
-  );
+  )
+;
 
   render() {
     return (
