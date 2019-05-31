@@ -3,13 +3,28 @@ import React, { Component } from 'react';
 import { Platform, Text, View, Image, TouchableOpacity } from 'react-native';
 import { Card, Icon, Button } from "react-native-elements"
 import { NavigationScreenProps } from "react-navigation";
-;
+import AsyncStorage from '@react-native-community/async-storage';
+
 
 interface Props {
   navigator: NavigationScreenProp<any, any>;
 }
 
 class HomeScreen extends Component {
+
+  getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@userId')
+      if(value !== null) {
+        // value previously stored
+        console.warn('VALUE IS :',userId);
+      }
+    } catch(e) {
+      // error reading value
+      console.error(e);
+    }
+  };
+
 
   static navigationOptions = ({ navigation }: NavigationScreenProps) =>({
     title: 'Home',

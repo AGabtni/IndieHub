@@ -2,11 +2,12 @@ import strings from "./strings";
 import styles from "./styles";
 import { strings as loginStrings } from "../../screens/Login";
 import React, { Component } from "react";
-import { View } from "react-native";
+import { View, Alert } from "react-native";
 import { Button, Input } from "react-native-elements";
 import { NavigationScreenProp } from "react-navigation";
 import { Formik, FormikProps, FormikActions } from "formik";
 import { object as yupObject, string as yupString } from "yup";
+import deviceStorage from '../../src/services/deviceStorage';
 
 interface FormValues{
 
@@ -19,23 +20,73 @@ interface Props {
 }
 
 export default class LoginForm extends Component<Props, object> {
+  constructor(props) {
+    super(props);
+    this.state = {
+        email: "",
+        password: ""
+      };
+  };
 
+  handleConnection = (response, values, formikBag: FormikActions<FormValues>) =>{
+    console.warn(response);
+    if(response.length > 0 ){
 
-  componentDidMount(){
-    return fetch('http://192.168.0.153:3000/dbRouter/users')
-      .then(res => res.json())
-      .then(users=>console.warn(users))
-    };
+      console.warn ("USER FOUND");
+      this.setState({ email : values.email });
+      this.setState({ password : values.password });
+      setTimeout(() => {
+        formikBag.setSubmitting(false);
+        this.props.navigation.navigate("HomeScreen");
+      }, 3000);
 
+    }else{
+
+      console.warn ("NO SUCH USER");
+      formikBag.setSubmitting(false);
+      Alert.alert(
+        'Login problem',
+        'There is no account registered with this email address',
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+
+        ],
+        {cancelable: false},
+      );
+
+    }
+  };
 
   handleSubmit = (values: FormValues, formikBag: FormikActions<FormValues>) =>
   {
     formikBag.setSubmitting(true);
-    // Here you would usually make a call to your API for a login.
-    setTimeout(() => {
-      formikBag.setSubmitting(false);
-      this.props.navigation.navigate("HomeScreen");
-    }, 3000);
+
+    fetch('http://192.168.0.153:3000/dbRouter/login',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+
+        }),
+      }
+    )
+    .then((response) => response.json())
+    .then((responseJson) => this.handleConnection(responseJson, values, formikBag))
+    .catch((error) => {
+      console.error(error);
+    });
+
+
   };
   renderForm = ({
     values,

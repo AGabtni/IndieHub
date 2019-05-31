@@ -34,6 +34,7 @@ export default class LoginForm extends Component<NavigationScreenProps> {
       }
     )
     .then((response) => response.json())
+    .then((message)=> console.warn(message))
     .catch((error) => {
       console.error(error);
     });
