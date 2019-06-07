@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { Platform, Text, View, Image, TouchableOpacity } from 'react-native';
 import { Card, Icon, Button } from "react-native-elements"
 import { NavigationScreenProps } from "react-navigation";
-import AsyncStorage from '@react-native-community/async-storage';
 
 
 interface Props {
@@ -12,18 +11,20 @@ interface Props {
 
 class HomeScreen extends Component {
 
-  getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('@userId')
-      if(value !== null) {
-        // value previously stored
-        console.warn('VALUE IS :',userId);
-      }
-    } catch(e) {
-      // error reading value
-      console.error(e);
-    }
-  };
+  constructor(){
+    super();
+
+    
+  }
+
+  componentDidMount = (props) => {
+
+
+
+  }
+
+
+
 
 
   static navigationOptions = ({ navigation }: NavigationScreenProps) =>({
@@ -39,7 +40,22 @@ class HomeScreen extends Component {
         />
       )
     }),
+    headerRight: (
 
+        <Icon
+          name="md-contact"
+          type="ionicon"
+          containerStyle={styles.iconRight}
+          onPress={() => {
+              //grab the data passed feteched throughout the loading screen
+              const userData = navigation.getParam('userdata', 'NO-DATA');
+              navigation.navigate("ProfileScreen" ,{userdata: userData});
+
+
+          }}
+        />
+
+    ),
     headerStyle: {
       backgroundColor: '#f4511e',
     },
@@ -50,6 +66,8 @@ class HomeScreen extends Component {
   });
   render() {
     const { navigate } = this.props.navigation;
+    const { navigation } = this.props;
+
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={() => navigate("DetailScreen")}>

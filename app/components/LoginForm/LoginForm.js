@@ -28,36 +28,19 @@ export default class LoginForm extends Component<Props, object> {
       };
   };
 
-  handleConnection = (response, values, formikBag: FormikActions<FormValues>) =>{
-    console.warn(response);
-    if(response.length > 0 ){
+  handleConnection = (token, values, formikBag: FormikActions<FormValues>) =>{
+    //console.warn(response[0]);
+    if(token.length > 0 ){
 
-      console.warn ("USER FOUND");
       this.setState({ email : values.email });
       this.setState({ password : values.password });
+      deviceStorage.saveItem("id_token", token);
+
+
       setTimeout(() => {
         formikBag.setSubmitting(false);
-        this.props.navigation.navigate("HomeScreen");
-      }, 3000);
-
-    }else{
-
-      console.warn ("NO SUCH USER");
-      formikBag.setSubmitting(false);
-      Alert.alert(
-        'Login problem',
-        'There is no account registered with this email address',
-        [
-          {text: 'OK', onPress: () => console.log('OK Pressed')},
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-
-        ],
-        {cancelable: false},
-      );
+        this.props.navigation.navigate("LoadingScreen");
+      }, 1000);
 
     }
   };
@@ -66,7 +49,10 @@ export default class LoginForm extends Component<Props, object> {
   {
     formikBag.setSubmitting(true);
 
-    fetch('http://192.168.0.153:3000/dbRouter/login',
+
+    //On campus use 192.168.43.73
+    //TODO : CONCATENATE IP WITH FULL URL
+    fetch('http://192.168.43.73:8000/api/user/signin',
       {
         method: 'POST',
         headers: {
@@ -81,7 +67,32 @@ export default class LoginForm extends Component<Props, object> {
       }
     )
     .then((response) => response.json())
-    .then((responseJson) => this.handleConnection(responseJson, values, formikBag))
+    .then((responseJson) => {
+      if(responseJson.auth)
+        this.handleConnection(responseJson.accessToken, values, formikBag);
+
+      //If authentification failed
+      else{
+
+        Alert.alert(
+          'Login problem',
+          'Invalid password or email',
+          [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+
+          ],
+          {cancelable: false},
+        );
+        formikBag.setSubmitting(false);
+
+
+      }
+    })
     .catch((error) => {
       console.error(error);
     });

@@ -18,7 +18,7 @@ export default class LoginForm extends Component<NavigationScreenProps> {
 
 
   handleRegister = (values: FormValues) => {
-    fetch('http://192.168.0.153:3000/dbRouter/users',
+    fetch('http://192.168.0.153:8000/api/user',
       {
         method: 'POST',
         headers: {
@@ -29,12 +29,11 @@ export default class LoginForm extends Component<NavigationScreenProps> {
           userName: 'Agabt03',
           password: values.password,
           email: values.email,
-          jobCategory: 'Developer',
         }),
       }
     )
     .then((response) => response.json())
-    .then((message)=> console.warn(message))
+    .then((user)=> console.warn(user))
     .catch((error) => {
       console.error(error);
     });

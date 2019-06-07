@@ -1,10 +1,95 @@
 import styles from './styles';
 import React, { Component } from 'react';
-import { Text, View, Platform } from 'react-native';
-import { Icon, Button } from "react-native-elements";
+import {
+  Image,
+  ImageBackground,
+  Linking,
+  ListView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+ } from 'react-native';
+import { Card, Icon, Button } from "react-native-elements";
+import { NavigationScreenProps } from "react-navigation";
+import PropTypes from 'prop-types';
+import Stars from 'react-native-stars';
+import {default as StarIcon} from 'react-native-vector-icons/MaterialCommunityIcons';
 
-class ProfileScreen extends Component {
 
+import Email from './Email'
+import Separator from './Separator'
+import Tel from './Tel'
+
+
+interface Props {
+  navigator: NavigationScreenProp<any, any>;
+}
+
+class ProfileScreen extends Component<NavigationScreenProps> {
+
+
+  constructor(){
+    super();
+    //Store jwt here
+    this.state = {
+      username : '',
+      firstname : '',
+      lastname : '',
+      email : '',
+      createdat : '',
+      loading: true
+    };
+    this.newUser = this.newUser.bind(this);
+
+
+  }
+
+
+  //Start()
+  componentDidMount = (props) => {
+
+
+        const { navigation } = this.props;
+
+        const userData = navigation.getParam('userdata', 'NO-DATA');
+
+        this.newUser(userData);
+  }
+
+    //Store incoming user data
+    newUser(userData){
+
+      var userName = '';
+      const email = userData.email;
+
+            if(!userData.username){
+
+
+                console.warn('Email '+email );
+                //var index = ;
+                userName = userData.email.slice(0,email.indexOf('@'));
+
+
+
+            }
+      this.setState({
+        username : userName,
+        firstname : userData.firstName,
+        lastname : userData.lastname,
+        email : userData.email,
+        createdat : userData.createdAt,
+        loading: false
+
+      });
+
+
+    }
+
+
+  //Header defined here must be removed or transfered to renderHeader()
+  /*
   static navigationOptions = ({ navigation }: NavigationScreenProps) =>({
     headerLeft:Platform.select({
       ios: (
@@ -26,13 +111,103 @@ class ProfileScreen extends Component {
     }),
 
     headerTransparent : true,
-  });
+  })*/
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>This is the Profile Screen.</Text>
+
+  //Renders the 5 rating stars
+  //TODO : disable modification
+  renderStars = () => {
+
+
+    return(
+
+      <View style={{alignItems:'center'}}>
+        <Stars
+          //display={3.67}
+          spacing={8}
+          default={2.5}
+          count={5}
+          half={true}
+          starSize={80}
+          fullStar={
+            <StarIcon name={'star'} style={[styles.myStarStyle]}/>
+          }
+          emptyStar={<StarIcon name={'star-outline'} style={[styles.myStarStyle, styles.myEmptyStarStyle]}/>}
+          halfStar={<StarIcon name={'star-half'} style={[styles.myStarStyle]}/>}
+        />
       </View>
+
+    );
+  }
+
+
+  renderHeader = () => {
+    const {
+      avatar,
+      avatarBackground,
+      firstName,
+    } = this.props
+
+    if(!this.state.loading){
+
+      return (
+        <View style={styles.headerContainer}>
+          <ImageBackground
+            style={styles.headerBackgroundImage}
+            blurRadius={10}
+            source={require('../../images/game_dev.png')}
+            >
+            {this.renderStars()}
+
+            <View style={styles.headerColumn}>
+
+              <Image
+                style={styles.userImage}
+                source={require('../../images/avatars/abott@adorable.png')}
+              />
+
+              <Text style={styles.userNameText}>{this.state.username}</Text>
+              <View style={styles.userAddressRow}>
+                <View>
+                  <Icon
+                    name="place"
+                    underlayColor="transparent"
+                    iconStyle={styles.placeIcon}
+                    onPress={this.onPressPlace}
+                  />
+                </View>
+                <View style={styles.userCityRow}>
+                  <Text style={styles.userCityText}>
+                    {this.state.firstname}
+                  </Text>
+
+                </View>
+                <View>
+
+                </View>
+              </View>
+            </View>
+          </ImageBackground>
+        </View>
+      );
+
+    }
+
+}
+  //Update()
+  render() {
+
+    return (
+      <ScrollView style={styles.scroll}>
+        <View style={styles.container}>
+          <Card containerStyle={styles.cardContainer}>
+            {this.renderHeader()}
+
+            {Separator()}
+          </Card>
+        </View>
+      </ScrollView>
+
     );
   }
 }

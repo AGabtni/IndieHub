@@ -17,7 +17,13 @@ const styles = StyleSheet.create({
   icon:{
 
     paddingLeft: 10
-  }
+  },
+
+
+    iconRight:{
+
+      paddingRight: 10
+    }
 });
 
 export default styles;
