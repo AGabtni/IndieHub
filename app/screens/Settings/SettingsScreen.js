@@ -2,9 +2,27 @@ import styles from './styles';
 import React, { Component } from 'react';
 import {Platform, Text, View } from 'react-native';
 import { Icon, Button } from "react-native-elements";
+import { NavigationScreenProps } from "react-navigation";
+
+
+
+interface Props {
+  navigator: NavigationScreenProp<any, any>;
+}
 
 class SettingsScreen extends Component {
 
+  componentDidMount = (props) => {
+
+        const navParams = this.props.navigation.state.params;
+        //const userData = this.props.userData;
+
+        //const userData = navigation.getParam('userdata', 'NO-DATA');
+
+        //grab the data passed feteched throughout the loading screen
+        //const userData = navigation.getParam('userdata', 'NO-DATA');
+        console.warn("FROM SETTINGS USERDATA IS :"+navParams);
+  }
 
     static navigationOptions = ({ navigation }: NavigationScreenProps) =>({
       //title: 'Settings',

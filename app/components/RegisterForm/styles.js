@@ -9,12 +9,22 @@ const imageWidth = "80%";
 
 const styles = StyleSheet.create({
   container: {
-    
+    flex: 1,
+    flexDirection:'column',
+
     justifyContent: "space-evenly",
-    alignItems: "center"
+    alignItems: "center",
+    padding: 20,
+  },
+
+
+  buttonContainer:{
+    flexDirection:'column',
+
+
   },
   registerButtonContainer: {
-    width: imageWidth
+    width: 200,
   },
   registerButton: {
     backgroundColor: primaryBlue

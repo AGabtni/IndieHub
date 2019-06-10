@@ -1,4 +1,5 @@
 import BurgerMenu from '../components/Menu';
+
 import DetailScreen from '../screens/Detail';
 import HomeScreen from '../screens/Home';
 import LoadingScreen from '../screens/Loading';
@@ -7,6 +8,7 @@ import SettingsScreen from '../screens/Settings';
 import RegisterScreen from '../screens/Register';
 import LoginScreen from '../screens/Login';
 import ProfileScreen from '../screens/Profile';
+import theme from '../styles/theme.style.js';
 
 
 import { strings as loginStrings } from "../screens/Login";
@@ -14,7 +16,7 @@ import { fromRight, zoomIn, zoomOut } from 'react-navigation-transitions';
 
 
 import React from "react";
-import { Platform } from "react-native";
+import { Platform, StatusBar } from "react-native";
 import { Icon } from "react-native-elements";
 
 import {
@@ -30,25 +32,10 @@ import {
 
 } from "react-navigation";
 
-/*const IOS_MODAL_ROUTES = ["OptionsScreen"];
-
-let dynamicModalTransition = (
-  transitionProps: NavigationTransitionProps,
-  prevTransitionProps: NavigationTransitionProps
-): TransitionConfig => {
-  return StackViewTransitionConfigs.defaultTransitionConfig(
-    transitionProps,
-    prevTransitionProps,
-    IOS_MODAL_ROUTES.some(
-      screenName =>
-        screenName === transitionProps.scene.route.routeName ||
-        (prevTransitionProps && screenName === prevTransitionProps.scene.route.routeName)
-    )
-  );
-};*/
 const handleCustomTransition = ({ scenes }) => {
   const prevScene = scenes[scenes.length - 2];
   const nextScene = scenes[scenes.length - 1];
+  const stack = scenes;
 
   // Custom HomeStack transitions
   if (prevScene
@@ -59,7 +46,13 @@ const handleCustomTransition = ({ scenes }) => {
     && (prevScene.route.routeName === 'DetailScreen' || prevScene.route.routeName === 'OptionsScreen')
     && nextScene.route.routeName === 'HomeScreen') {
     return zoomOut();
-  }
+  } else if (prevScene
+    && prevScene.route.routeName === 'HomeScreen'
+    && nextScene.route.routeName === 'LoadingScreen')
+    {
+      return zoomOut();
+    }
+
   return fromRight();
 }
 
@@ -68,20 +61,18 @@ const HomeStack = createStackNavigator(
     DetailScreen,
     HomeScreen,
     OptionsScreen,
-    ProfileScreen
-  },
+    ProfileScreen,
+    LoadingScreen
+    },
   {
     initialRouteName: "HomeScreen",
     transitionConfig: (nav) => handleCustomTransition(nav),
+    //headerMode: 'none',
+
   },
 );
 
 
-const SettingsStack = createStackNavigator(
-  { SettingsScreen }
-  //{ transitionConfig: dynamicModalTransition }
-
-);
 
 
 HomeStack.navigationOptions = ({ navigation }: NavigationScreenProps) => {
@@ -104,55 +95,87 @@ HomeStack.navigationOptions = ({ navigation }: NavigationScreenProps) => {
   };
 };
 
-SettingsStack.navigationOptions = {
+SettingsScreen.navigationOptions = {
   tabBarLabel: "Settings",
   tabBarIcon: ({ tintColor }: TabScene) => <Icon name="ios-cog" type="ionicon" color={tintColor} />,
   drawerLabel: "Settings",
   drawerIcon: ({ tintColor }: TabScene) => <Icon name="md-cog" type="ionicon" color={tintColor} />
 };
 
+/*
+const AppStack = createStackNavigator(
+  {
+    HomeStack,
+    SettingsScreen
+  },
+  {
+    initialRouteName: "HomeStack",
+    //transitionConfig: (nav) => handleCustomTransition(nav),
+  },
+);*/
 
+export const MyDrawer = createDrawerNavigator({
+
+  HomeStack,
+  SettingsScreen
+
+
+  },{
+    initialRouteName: "HomeStack",
+    contentComponent: BurgerMenu,
+
+  }
+);
+/*
 const AppStack = Platform.select({
-  ios: createBottomTabNavigator({ HomeStack, SettingsStack }),
-  android: createDrawerNavigator({ HomeStack, SettingsStack },  { contentComponent: BurgerMenu } ),
+  ios: createBottomTabNavigator({ HomeStack, SettingsScreen }),
+  android: createDrawerNavigator({
+    HomeStack, SettingsScreen },
+      { contentComponent: BurgerMenu
 
-});
+      } ),
 
-//Create a new auth Stack here :
+});*/
+
 
 
 //TOP BAR
 const AuthTabs = createMaterialTopTabNavigator(
   {
     LoginScreen,
-    RegisterScreen
+    RegisterScreen,
   },
   {
-    tabBarPosition: 'top',
+    tabBarPosition: 'bottom',
     swipeEnabled: true,
     animationEnabled: true,
     tabBarOptions: {
       activeTintColor: '#FFFFFF',
       inactiveTintColor: '#F8F8F8',
+      showIcon: true,
+      showLabel : false,
       style: {
-        backgroundColor: '#633689',
+        //backgroundColor: '#633689',
+        backgroundColor: theme.background1,
+
       },
       labelStyle: {
         textAlign: 'center',
       },
       indicatorStyle: {
-        borderBottomColor: '#87B56A',
+        borderBottomColor: theme.background2,
         borderBottomWidth: 2,
       },
     },
+
   }
 );
 
 //Just add the authStack with the sign in screen inside of RootSwitch
 const RootSwitch = createSwitchNavigator(
-  {   LoadingScreen,
-      AuthTabs,
-      AppStack
+  {   AuthLoading : LoadingScreen,
+      Auth : AuthTabs,
+      App : MyDrawer
    }
 );
 

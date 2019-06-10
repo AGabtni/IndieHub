@@ -14,33 +14,36 @@ const styles = StyleSheet.create({
 
     justifyContent: "space-evenly",
     alignItems: "center",
-    paddingTop:40
+    padding: 20,
 
   },
   buttonContainer:{
     flexDirection:'column',
-    flex : 0.5
 
 
   },
   forgottenPasswordButtonContainer: {
-    width: imageWidth
+    width: 200
   },
   forgottenPasswordTitle: {
     color: "white"
   },
   loginButtonContainer: {
-    width:  imageWidth
+    width:  200,
+    marginTop: 10,
   },
-  loginButton: {
-    backgroundColor: primaryBlue
-  },
+
   loginButtonTitle: {
     color: "white"
   },
   disabled: {
     backgroundColor: primaryBlue,
     opacity: 0.3
+  },
+
+  rightIcon:{
+
+    marginRight: 20
   }
 });
 

@@ -7,6 +7,7 @@ import { View } from "react-native";
 import { Button, Input } from "react-native-elements";
 import { NavigationScreenProps } from "react-navigation";
 import { object as yupObject, ref as yupRef, string as yupString } from "yup";
+import deviceStorage from '../../src/services/deviceStorage';
 
 interface FormValues {
   email: string;
@@ -15,6 +16,30 @@ interface FormValues {
 }
 
 export default class LoginForm extends Component<NavigationScreenProps> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loadingToken: true
+    };
+
+    this.finishLoading = this.finishLoading.bind(this);
+
+
+
+  };
+
+  finishLoading(){
+
+    this.setState({
+      loadingToken : false
+
+    })
+  }
+
+
+
+
+
 
 
   handleRegister = (values: FormValues) => {
@@ -33,7 +58,19 @@ export default class LoginForm extends Component<NavigationScreenProps> {
       }
     )
     .then((response) => response.json())
-    .then((user)=> console.warn(user))
+    .then((responseJson)=> {
+
+      const token = responseJson.accessToken;
+      if(responseJson.auth){
+
+        if(token.length >0){
+          console.warn('HERE ');
+          deviceStorage.saveItem("id_token", token);
+
+        }
+      }
+
+    })
     .catch((error) => {
       console.error(error);
     });
@@ -45,10 +82,11 @@ export default class LoginForm extends Component<NavigationScreenProps> {
   handleSubmit = (values: FormValues, formikBag: FormikActions<FormValues>) => {
     formikBag.setSubmitting(true);
     if (values.email != values.password) {
+      this.handleRegister(values);
+
       setTimeout(() => {
-        this.handleRegister(values);
         formikBag.setSubmitting(false);
-        this.props.navigation.navigate("HomeScreen");
+        this.props.navigation.navigate("AuthLoading");
       }, 3000
     );
     }
@@ -97,18 +135,22 @@ export default class LoginForm extends Component<NavigationScreenProps> {
           touched.confirmPassword && errors.confirmPassword ? errors.confirmPassword : undefined
         }
       />
-      <Button
-        title={registerStrings.registerTitle}
-        containerStyle={styles.registerButtonContainer}
-        buttonStyle={styles.registerButton}
-        disabledStyle={styles.disabled}
-        titleStyle={styles.registerButtonTitle}
-        disabledTitleStyle={styles.registerButtonTitle}
-        onPress={handleSubmit}
-        disabled={!isValid || isSubmitting}
-        loading={isSubmitting}
-        loadingProps={{ size: "large", color: "white" }}
-      />
+      <View style={styles.buttonContainer}>
+        <Button
+          title={registerStrings.registerTitle}
+          containerStyle={styles.registerButtonContainer}
+          buttonStyle={styles.registerButton}
+          disabledStyle={styles.disabled}
+          titleStyle={styles.registerButtonTitle}
+          disabledTitleStyle={styles.registerButtonTitle}
+          onPress={handleSubmit}
+          disabled={!isValid || isSubmitting}
+          loading={isSubmitting}
+          loadingProps={{ size: "large", color: "white" }}
+        />
+
+      </View>
+
     </View>
   )
 ;

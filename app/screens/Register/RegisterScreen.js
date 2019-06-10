@@ -10,7 +10,7 @@ import RegisterForm from "../../components/RegisterForm";
 
 class RegisterScreen extends Component<NavigationScreenProps> {
   static navigationOptions = {
-    tabBarLabel: strings.registerTitle,
+    //tabBarLabel: strings.registerTitle,
     tabBarIcon: ({ tintColor }: TabScene) => {
       let iconName = Platform.select({ ios: "ios-person-add", android: "md-person-add" });
       return <Icon name={iconName} type="ionicon" color={tintColor} />;
@@ -19,7 +19,9 @@ class RegisterScreen extends Component<NavigationScreenProps> {
 
   render() {
     return (
-      <KeyboardAvoidingView behavior="padding" style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}>
         <RegisterForm navigation={this.props.navigation} />
       </KeyboardAvoidingView>
     );

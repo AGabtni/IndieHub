@@ -3,7 +3,7 @@ import styles from "./styles";
 import { strings as loginStrings } from "../../screens/Login";
 import React, { Component } from "react";
 import { View, Alert } from "react-native";
-import { Button, Input } from "react-native-elements";
+import { Icon, Button, Input } from "react-native-elements";
 import { NavigationScreenProp } from "react-navigation";
 import { Formik, FormikProps, FormikActions } from "formik";
 import { object as yupObject, string as yupString } from "yup";
@@ -39,7 +39,7 @@ export default class LoginForm extends Component<Props, object> {
 
       setTimeout(() => {
         formikBag.setSubmitting(false);
-        this.props.navigation.navigate("LoadingScreen");
+        this.props.navigation.navigate("AuthLoading");
       }, 1000);
 
     }
@@ -52,7 +52,7 @@ export default class LoginForm extends Component<Props, object> {
 
     //On campus use 192.168.43.73
     //TODO : CONCATENATE IP WITH FULL URL
-    fetch('http://192.168.43.73:8000/api/user/signin',
+    fetch('http://192.168.0.153:8000/api/user/signin',
       {
         method: 'POST',
         headers: {
@@ -118,6 +118,15 @@ export default class LoginForm extends Component<Props, object> {
         onBlur={() => setFieldTouched("email")}
         editable={!isSubmitting}
         errorMessage={touched.email && errors.email ? errors.email : undefined}
+        leftIcon={<Icon
+                name="md-person"
+                type="ionicon"
+                color='black'
+                size = {20}
+              />
+            }
+        leftIconContainerStyle = {styles.rightIcon}
+
       />
       <Input
         placeholder={strings.password}
@@ -128,27 +137,36 @@ export default class LoginForm extends Component<Props, object> {
         onBlur={() => setFieldTouched("password")}
         editable={!isSubmitting}
         errorMessage={touched.password && errors.password ? errors.password : undefined}
+        leftIcon={<Icon
+                name="md-lock"
+                type="ionicon"
+                color='black'
+                size = {20}
+              />
+            }
+        leftIconContainerStyle = {styles.rightIcon}
+
       />
       <View style={styles.buttonContainer}>
-      <Button
-        clear
-        title={loginStrings.forgottenPassword}
-        containerStyle={styles.forgottenPasswordButtonContainer}
-        titleStyle={styles.forgottenPasswordTitle}
-        onPress={() => this.props.navigation.navigate("PasswordResetScreen")}
-      />
-      <Button
-        title={loginStrings.loginTitle}
-        containerStyle={styles.loginButtonContainer}
-        buttonStyle={styles.loginButton}
-        disabledStyle={styles.disabled}
-        titleStyle={styles.loginButtonTitle}
-        disabledTitleStyle={styles.loginButtonTitle}
-        onPress={handleSubmit}
-        disabled={isSubmitting}
-        loading={isSubmitting}
-        loadingProps={{ size: "small", color: "white" }}
-      />
+        <Button
+          clear
+          title={loginStrings.forgottenPassword}
+          containerStyle={styles.forgottenPasswordButtonContainer}
+          titleStyle={styles.forgottenPasswordTitle}
+          onPress={() => this.props.navigation.navigate("PasswordResetScreen")}
+        />
+
+        <Button
+          title={loginStrings.loginTitle}
+          containerStyle={styles.loginButtonContainer}
+          disabledStyle={styles.disabled}
+          titleStyle={styles.loginButtonTitle}
+          disabledTitleStyle={styles.loginButtonTitle}
+          onPress={handleSubmit}
+          disabled={isSubmitting}
+          loading={isSubmitting}
+          loadingProps={{ size: "small", color: "white" }}
+        />
       </View>
 
     </View>
