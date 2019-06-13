@@ -9,7 +9,7 @@ export default {
   FONT_WEIGHT_HEAVY: 800,
   black: '#1a1917',
   gray: '#888888',
-  background1: '#fc8123',
+  background1: 'rgba(252, 129, 35, 0.7)',//#fc8123
   background2: '#fce622',
   HEADER_COLOR: '#40E0D0',
 };

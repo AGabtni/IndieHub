@@ -133,25 +133,9 @@ class HomeScreen extends Component {
         />
       )
     }),
-    headerRight: (
-
-        <Icon
-          name="md-contact"
-          type="ionicon"
-          containerStyle={styles.iconRight}
-          onPress={() => {
-              //grab the data passed feteched throughout the loading screen
-              const userData = navigation.getParam('userdata', 'NO-DATA');
-              console.warn("FROM HOME USERDATA IS :"+userData);
-              navigation.navigate("ProfileScreen" ,{userdata: userData});
-
-
-          }}
-        />
-
-    ),
+    //headerRight: (),
     headerStyle: {
-      backgroundColor: '#f4511e',
+      backgroundColor: theme.background1,
     },
     headerTintColor: '#fff',
     headerTitleStyle: {
@@ -168,9 +152,10 @@ class HomeScreen extends Component {
           <SafeAreaView style={styles.safeArea}>
                 <View style={styles.container}>
 
+
                     <StatusBar
                       translucent={true}
-                      backgroundColor={'rgba(0, 0, 0, 0.3)'}
+                      backgroundColor={theme.background1}
                       barStyle={'light-content'}
                     />
                     { this.gradient }

@@ -1,8 +1,8 @@
 import styles from './styles';
 import React, { Component } from 'react';
-import { Text, View, ImageBackground } from 'react-native';
+import { Text, View, ImageBackground, StatusBar } from 'react-native';
 import { withNavigation } from 'react-navigation';
-
+import theme from '../../styles/theme.style.js';
 class DetailScreen extends Component {
 
 
@@ -29,6 +29,8 @@ class DetailScreen extends Component {
 
     const data = {title, subtitle, illustration};
     this.newEntry(data);
+
+
 
   }
 
@@ -67,11 +69,14 @@ class DetailScreen extends Component {
 
 
   render() {
+
     if(!this.state.loading){
 
         //console.warn(this.state.illustration);
         return (
+
           <View style={styles.container}>
+
             {this.renderContactHeader()}
           </View>
         );
@@ -81,6 +86,7 @@ class DetailScreen extends Component {
     return(
 
       <View style={styles.container}>
+
         <Text>Loading</Text>
       </View>
 

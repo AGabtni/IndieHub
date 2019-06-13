@@ -10,12 +10,14 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableHighlight,
  } from 'react-native';
 import { Card, Icon, Button } from "react-native-elements";
 import { NavigationScreenProps } from "react-navigation";
 import PropTypes from 'prop-types';
 import Stars from 'react-native-stars';
 import {default as StarIcon} from 'react-native-vector-icons/MaterialCommunityIcons';
+import ImagePicker from 'react-native-image-picker'
 
 
 import Email from './Email'
@@ -39,6 +41,7 @@ class ProfileScreen extends Component<NavigationScreenProps> {
       lastname : '',
       email : '',
       createdat : '',
+      photo: null,
       loading: true
     };
     this.newUser = this.newUser.bind(this);
@@ -53,13 +56,14 @@ class ProfileScreen extends Component<NavigationScreenProps> {
 
         const { navigation } = this.props;
 
-        const userData = navigation.getParam('userdata', 'NO-DATA');
+
+        const userData = navigation.dangerouslyGetParent().getParam('userdata', 'NO-DATA');
 
         this.newUser(userData);
   }
 
-    //Store incoming user data
-    newUser(userData){
+  //Handler for incoming new user data
+  newUser(userData){
 
       var userName = '';
       const email = userData.email;
@@ -140,7 +144,30 @@ class ProfileScreen extends Component<NavigationScreenProps> {
     );
   }
 
+  renderAvatar = () =>{
 
+    const { photo } = this.state
+
+    if(this.state.photo){
+      return(
+
+        <Image
+            style={styles.userImage}
+            source={{uri: photo.uri}}
+        />
+      );
+    }else{
+
+
+      return(
+
+          <Image
+              style={styles.userImage}
+              source={require('../../images/avatars/abott@adorable.png')}
+          />
+      );
+    }
+  }
   renderHeader = () => {
     const {
       avatar,
@@ -160,11 +187,11 @@ class ProfileScreen extends Component<NavigationScreenProps> {
             {this.renderStars()}
 
             <View style={styles.headerColumn}>
+              <TouchableHighlight style={styles.userImage} onPress={this.handleChoosePhoto}>
+                {this.renderAvatar()}
 
-              <Image
-                style={styles.userImage}
-                source={require('../../images/avatars/abott@adorable.png')}
-              />
+              </TouchableHighlight>
+
 
               <Text style={styles.userNameText}>{this.state.username}</Text>
               <View style={styles.userAddressRow}>
@@ -194,6 +221,21 @@ class ProfileScreen extends Component<NavigationScreenProps> {
     }
 
 }
+
+
+
+//Handler to update avatar photo from device
+handleChoosePhoto = () => {
+  const options = {
+    noData: true,
+  }
+  ImagePicker.launchImageLibrary(options, response => {
+    if (response.uri) {
+      this.setState({ photo: response })
+    }
+  })
+}
+
   //Update()
   render() {
 
@@ -211,5 +253,9 @@ class ProfileScreen extends Component<NavigationScreenProps> {
     );
   }
 }
+
+
+
+
 
 export default ProfileScreen; // e.g. DetailScreen

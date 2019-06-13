@@ -61,13 +61,15 @@ const HomeStack = createStackNavigator(
     DetailScreen,
     HomeScreen,
     OptionsScreen,
-    ProfileScreen,
     LoadingScreen
     },
   {
     initialRouteName: "HomeScreen",
     transitionConfig: (nav) => handleCustomTransition(nav),
-    //headerMode: 'none',
+    cardStyle: {
+      paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+      //backgroundColor: "#fffff"
+    }
 
   },
 );
@@ -85,23 +87,42 @@ HomeStack.navigationOptions = ({ navigation }: NavigationScreenProps) => {
   return {
     tabBarLabel: "Home",
     tabBarIcon: ({ tintColor }: TabScene) => (
-      <Icon name="ios-home" type="ionicon" color={tintColor} />
+      <Icon name="ios-home" type="ionicon" color={theme.background1} />
     ),
     drawerLockMode,
     drawerLabel: "Home",
+
+
     drawerIcon: ({ tintColor }: TabScene) => (
-      <Icon name="md-home" type="ionicon" color={tintColor} />
+      <Icon name="md-home" type="ionicon" color={theme.background1} />
     )
   };
 };
 
 SettingsScreen.navigationOptions = {
   tabBarLabel: "Settings",
-  tabBarIcon: ({ tintColor }: TabScene) => <Icon name="ios-cog" type="ionicon" color={tintColor} />,
+  tabBarIcon: ({ tintColor }: TabScene) => <Icon name="ios-cog" type="ionicon" color={theme.background1} />,
   drawerLabel: "Settings",
-  drawerIcon: ({ tintColor }: TabScene) => <Icon name="md-cog" type="ionicon" color={tintColor} />
+
+  labelStyle: {
+    //fontFamily: 'SomeFont',
+    color: theme.background1,
+  },
+  drawerIcon: ({ tintColor }: TabScene) => <Icon name="md-cog" type="ionicon" color={theme.background1} />
 };
 
+
+ProfileScreen.navigationOptions = {
+  tabBarLabel: "Profile",
+  tabBarIcon: ({ tintColor }: TabScene) => <Icon name="ios-contact" type="ionicon" color={theme.background1} />,
+  drawerLabel: "Profile",
+
+  labelStyle: {
+    //fontFamily: 'SomeFont',
+    color: theme.background1,
+  },
+  drawerIcon: ({ tintColor }: TabScene) => <Icon name="md-contact" type="ionicon" color={theme.background1} />
+};
 /*
 const AppStack = createStackNavigator(
   {
@@ -117,7 +138,9 @@ const AppStack = createStackNavigator(
 export const MyDrawer = createDrawerNavigator({
 
   HomeStack,
-  SettingsScreen
+  SettingsScreen,
+  ProfileScreen
+
 
 
   },{

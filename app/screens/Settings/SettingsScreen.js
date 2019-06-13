@@ -21,7 +21,10 @@ class SettingsScreen extends Component {
 
         //grab the data passed feteched throughout the loading screen
         //const userData = navigation.getParam('userdata', 'NO-DATA');
-        console.warn("FROM SETTINGS USERDATA IS :"+navParams);
+        //console.warn("FROM SETTINGS USERDATA IS :"+navParams);
+
+        console.warn(this.props.navigation.dangerouslyGetParent().state.params);
+
   }
 
     static navigationOptions = ({ navigation }: NavigationScreenProps) =>({
