@@ -29,6 +29,7 @@ interface Props {
   navigator: NavigationScreenProp<any, any>;
 }
 
+
 class ProfileScreen extends Component<NavigationScreenProps> {
 
 
@@ -36,6 +37,7 @@ class ProfileScreen extends Component<NavigationScreenProps> {
     super();
     //Store jwt here
     this.state = {
+      userid : '',
       username : '',
       firstname : '',
       lastname : '',
@@ -65,57 +67,27 @@ class ProfileScreen extends Component<NavigationScreenProps> {
   //Handler for incoming new user data
   newUser(userData){
 
-      var userName = '';
-      const email = userData.email;
+    var userName = '';
+    const email = userData.email;
 
-            if(!userData.username){
+    if(!userData.username){
 
-
-                console.warn('Email '+email );
-                //var index = ;
-                userName = userData.email.slice(0,email.indexOf('@'));
-
-
-
-            }
-      this.setState({
-        username : userName,
-        firstname : userData.firstName,
-        lastname : userData.lastname,
-        email : userData.email,
-        createdat : userData.createdAt,
-        loading: false
-
-      });
-
-
+      //Use what's before the @ in the email as a username
+      userName = userData.email.slice(0,email.indexOf('@'));
     }
+    this.setState({
+      userid : userData.id,
+      username : userName,
+      firstname : userData.firstName,
+      lastname : userData.lastname,
+      email : userData.email,
+      createdat : userData.createdAt,
+      loading: false
+
+    });
 
 
-  //Header defined here must be removed or transfered to renderHeader()
-  /*
-  static navigationOptions = ({ navigation }: NavigationScreenProps) =>({
-    headerLeft:Platform.select({
-      ios: (
-        <Icon
-          name="ios-arrow-round-back"
-          type="ionicon"
-          containerStyle={styles.icon}
-          onPress={() => navigation.navigate("HomeScreen")}
-        />
-      ),
-      android: (
-        <Icon
-          name="md-arrow-round-back"
-          type="ionicon"
-          containerStyle={styles.icon}
-          onPress={() => navigation.navigate("HomeScreen")}
-        />
-      )
-    }),
-
-    headerTransparent : true,
-  })*/
+  }
 
 
   //Renders the 5 rating stars
@@ -153,7 +125,7 @@ class ProfileScreen extends Component<NavigationScreenProps> {
 
         <Image
             style={styles.userImage}
-            source={{uri: photo.uri}}
+            source={{uri:this.state.photo}}
         />
       );
     }else{
@@ -223,18 +195,49 @@ class ProfileScreen extends Component<NavigationScreenProps> {
 }
 
 
-
-//Handler to update avatar photo from device
-handleChoosePhoto = () => {
-  const options = {
-    noData: true,
-  }
-  ImagePicker.launchImageLibrary(options, response => {
-    if (response.uri) {
-      this.setState({ photo: response })
+  //Handler to update avatar photo from device
+  handleChoosePhoto = () => {
+    const options = {
+      noData: true,
     }
-  })
-}
+    ImagePicker.launchImageLibrary(options, response => {
+      if (response.uri) {
+        const photo = response;
+
+        //Change to a more convenient name for stored avataers
+        const photoName = this.state.userid +  photo.fileName ;
+        console.warn(response);
+        const data = new FormData();
+        data.append('userid', this.state.userid);
+        data.append('file', {
+         uri : photo.uri,
+         type: photo.type,
+         name: photoName,
+        });
+        const config = {
+         method: 'POST',
+         headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data',
+         },
+         body: data,
+        };
+
+        fetch("http://192.168.0.153:8000/api/user/upload", config)
+        .then(response => response.json())
+        .then(response => {
+          alert("Upload success!");
+          console.warn(response.link);
+          this.setState({ photo: response.link });
+        })
+        .catch(error => {
+
+          alert("Upload failed!");
+        });
+
+      }
+    })
+  }
 
   //Update()
   render() {
